@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#070b1a">
+  <title>Pendaftaran Sukan Kolej</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="bg" aria-hidden="true">
+  <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
+</div>
+
+<div class="shell">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar" id="sidebar" aria-label="Menu utama">
+    <div class="sb-brand">
+      <span class="logo">🏆</span>
+      <div><div class="brand-name" data-bind="team">Team Nilam</div><div class="sb-sub" data-bind="college">Kolej Nilam</div></div>
+    </div>
+    <nav class="sb-nav" id="sb-nav"></nav>
+    <div class="sb-spacer"></div>
+    <div id="session-bar" class="sb-user" hidden>
+      <div class="user-chip">
+        <span class="avatar" id="sb-avatar">?</span>
+        <div class="user-meta"><strong id="sb-name"></strong><span id="sb-phone"></span></div>
+      </div>
+      <button type="button" id="btn-logout" class="btn btn-ghost btn-sm btn-block">Log keluar</button>
+    </div>
+  </aside>
+  <div class="sb-backdrop" id="sb-backdrop"></div>
+
+<main class="container" id="app">
+
+  <header class="topbar">
+    <button type="button" id="btn-menu" class="icon-btn" aria-label="Buka menu">☰</button>
+    <div class="brand"><span class="logo">🏆</span><span class="brand-name" data-bind="team">Team Nilam</span></div>
+    <button type="button" class="tb-jersey" id="tb-jersey" data-goto-jersey hidden>👕 Jersi<span class="tb-dot" id="tb-dot" hidden></span></button>
+  </header>
+
+  <div id="banner" class="banner" hidden></div>
+
+  <div id="loading" class="loading">
+    <div class="spinner"></div>
+    <div>Memuatkan…</div>
+  </div>
+
+  <!-- ===================== LOG MASUK / DAFTAR MANAGER ===================== -->
+  <section id="view-auth" hidden>
+    <div class="auth-wrap">
+      <span class="float-emoji e1">🏀</span><span class="float-emoji e2">🏐</span><span class="float-emoji e3">♟️</span>
+      <span class="float-emoji e4">🎮</span><span class="float-emoji e5">🏃</span><span class="float-emoji e6">💪</span>
+
+      <div class="auth-hero">
+        <div class="logo logo-lg">🏆</div>
+        <h1 id="hero-title">Team <span class="grad-text">Nilam</span></h1>
+        <p>Portal pendaftaran pasukan sukan <strong data-bind="college">Kolej Nilam</strong> khas untuk manager. Daftar sekali, kemudian log masuk dengan nombor telefon dan PIN 4 digit anda.</p>
+        <div class="chips">
+          <span class="chip" data-bind="college">Kolej Nilam</span>
+          <span class="chip">7 Sukan</span>
+          <span class="chip">2 Pasukan / Sukan</span>
+        </div>
+        <button type="button" class="jpromo" id="jersey-promo" data-goto-jersey hidden>
+          <span class="jp-glow" aria-hidden="true"></span>
+          <img class="jp-thumb" id="jp-thumb" alt="Jersi Team Nilam">
+          <span class="jp-text">
+            <span class="jp-eyebrow">👕 Baharu &middot; Jersi Rasmi</span>
+            <strong>Jersi <span data-bind="team">Team Nilam</span> &middot; SUKOL 2026</strong>
+            <span class="jp-sub" id="jp-sub"></span>
+          </span>
+          <span class="jp-cta" id="jp-cta">Lihat jersi &rarr;</span>
+        </button>
+      </div>
+
+      <div class="glass auth-card">
+        <div class="tabs" role="tablist" data-active="login">
+          <span class="tab-pill"></span>
+          <button type="button" class="tab active" data-tab="login" role="tab">Log Masuk</button>
+          <button type="button" class="tab" data-tab="register" role="tab">Daftar Manager</button>
+        </div>
+
+        <!-- Log masuk -->
+        <form id="login-form" novalidate autocomplete="off">
+          <h2 class="form-h">Selamat kembali 👋</h2>
+          <p class="sub">Masukkan nombor telefon (WhatsApp) dan PIN 4 digit anda.</p>
+          <div id="login-error" class="error-box" hidden></div>
+          <div class="field">
+            <label>Nombor Telefon (WhatsApp)</label>
+            <div class="input-wrap">
+              <span class="ico">📱</span>
+              <input type="tel" id="login-phone" class="input-lg" name="phone" inputmode="tel" maxlength="16" placeholder="012-3456789" autocomplete="tel">
+            </div>
+          </div>
+          <div class="field">
+            <label>PIN (4 digit)</label>
+            <div class="pin" data-pin="login-pin"></div>
+          </div>
+          <div class="actions">
+            <button type="submit" id="btn-login" class="btn btn-accent btn-lg btn-go">Log Masuk</button>
+          </div>
+          <p class="hint"><a href="#" data-tab-link="forgot">Terlupa PIN?</a> &nbsp;·&nbsp; Belum mendaftar? <a href="#" data-tab-link="register">Daftar manager</a></p>
+        </form>
+
+        <!-- Terlupa PIN -->
+        <form id="forgot-form" novalidate autocomplete="off" hidden>
+          <h2 class="form-h">Terlupa PIN? 🔑</h2>
+          <p class="sub">Masukkan nombor telefon anda. PIN baharu akan dihantar ke <strong>emel yang anda daftarkan</strong>.</p>
+          <div id="forgot-error" class="error-box" hidden></div>
+          <div id="forgot-ok" class="mail-note ok" hidden></div>
+          <div class="field">
+            <label>Nombor Telefon (WhatsApp)</label>
+            <div class="input-wrap">
+              <span class="ico">📱</span>
+              <input type="tel" id="forgot-phone" class="input-lg" inputmode="tel" maxlength="16" placeholder="012-3456789" autocomplete="tel">
+            </div>
+          </div>
+          <div class="actions">
+            <button type="submit" id="btn-forgot" class="btn btn-accent btn-lg btn-go">Hantar PIN ke emel</button>
+          </div>
+          <p class="hint"><a href="#" data-tab-link="login">← Kembali ke log masuk</a></p>
+        </form>
+
+        <!-- Daftar manager -->
+        <form id="register-form" novalidate autocomplete="off" hidden>
+          <h2 class="form-h">Jadi manager pasukan 🚀</h2>
+          <p class="sub">Dibuat sekali sahaja. Selepas itu, anda log masuk dengan nombor telefon + PIN 4 digit.</p>
+          <div id="register-error" class="error-box" hidden></div>
+          <div class="fields">
+            <div class="field span-6">
+              <label>Nombor Pelajar</label>
+              <input type="text" name="studentId" inputmode="numeric" maxlength="20" autocomplete="off">
+            </div>
+            <div class="field span-6">
+              <label>Nama Pelajar</label>
+              <input type="text" name="name" maxlength="100" autocomplete="off">
+            </div>
+            <div class="field span-4">
+              <label>Kod Program</label>
+              <input type="text" name="program" maxlength="12" autocomplete="off" placeholder="cth: CS110">
+            </div>
+            <div class="field span-8">
+              <label>Fakulti</label>
+              <select name="faculty" required></select>
+            </div>
+            <div class="field span-6">
+              <label>Nombor Telefon (WhatsApp)</label>
+              <input type="tel" name="phone" inputmode="tel" maxlength="16" autocomplete="off" placeholder="012-3456789">
+            </div>
+            <div class="field span-6">
+              <label>Emel (untuk pengesahan)</label>
+              <input type="email" name="email" inputmode="email" maxlength="120" autocomplete="off" placeholder="nama@gmail.com">
+            </div>
+            <div class="field span-6">
+              <label>Cipta PIN (4 digit)</label>
+              <div class="pin" data-pin="reg-pin"></div>
+            </div>
+            <div class="field span-6">
+              <label>Sahkan PIN</label>
+              <div class="pin" data-pin="reg-pin2"></div>
+            </div>
+          </div>
+          <label class="check-row">
+            <input type="checkbox" id="reg-public" checked>
+            <span>Paparkan <strong>nama, fakulti &amp; nombor WhatsApp</strong> saya pada senarai pasukan awam supaya pelajar boleh menghubungi saya
+            <em>(hanya semasa pasukan saya belum lengkap)</em>. Boleh diubah bila-bila masa di menu Tetapan.</span>
+          </label>
+          <div class="actions">
+            <button type="submit" id="btn-register" class="btn btn-accent btn-lg btn-go">Daftar &amp; Log Masuk</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="landing-dir" id="landing-dir" hidden>
+      <div class="section-head">
+        <h2>Senarai pasukan semasa</h2>
+        <div class="head-actions">
+          <button type="button" class="btn btn-ghost btn-sm" data-goto-register>Jadi manager</button>
+          <button type="button" class="btn btn-ghost btn-sm" id="btn-dir-refresh">↻</button>
+        </div>
+      </div>
+      <p class="sub">Mencari pasukan? Lihat pasukan yang masih memerlukan atlet dan hubungi manager melalui WhatsApp.</p>
+      <div id="dir-landing"></div>
+    </div>
+  </section>
+
+  <!-- ===================== DASHBOARD MANAGER ===================== -->
+  <section id="view-list" hidden>
+    <div class="greet">
+      <div class="eyebrow">Dashboard Manager</div>
+      <h2 id="greet-name"></h2>
+    </div>
+    <div class="stats" id="stats"></div>
+
+
+    <div id="my-teams-wrap" hidden>
+      <div class="section-head"><h2>Pasukan saya</h2></div>
+      <div id="my-teams" class="stack"></div>
+    </div>
+
+    <div class="section-head">
+      <h2>Pilih sukan &amp; pasukan</h2>
+      <button type="button" id="btn-refresh" class="btn btn-ghost btn-sm">↻ Muat semula</button>
+    </div>
+    <div id="sports-grid" class="grid"></div>
+  </section>
+
+  <!-- ===================== TETAPAN MANAGER ===================== -->
+  <section id="view-settings" hidden>
+    <div class="greet">
+      <div class="eyebrow">Tetapan</div>
+      <h2>Profil &amp; keselamatan</h2>
+    </div>
+
+    <!-- Emel pengesahan -->
+    <div class="email-card" id="email-card">
+      <div class="ec-text">
+        <span class="ec-label">📧 Emel pengesahan</span>
+        <strong id="ec-email"></strong>
+      </div>
+      <button type="button" id="btn-email-edit" class="btn btn-ghost btn-sm">Tukar</button>
+      <form id="email-form" novalidate autocomplete="off" hidden>
+        <input type="email" name="email" inputmode="email" maxlength="120" placeholder="nama@gmail.com">
+        <button type="submit" id="btn-email-save" class="btn btn-sm">Simpan</button>
+        <button type="button" id="btn-email-cancel" class="btn btn-ghost btn-sm">Batal</button>
+      </form>
+    </div>
+    <div id="email-error" class="error-box" hidden></div>
+
+    <!-- PIN -->
+    <div class="email-card" id="pin-card">
+      <div class="ec-text">
+        <span class="ec-label">🔒 PIN log masuk</span>
+        <strong>••••</strong>
+      </div>
+      <button type="button" id="btn-pin-edit" class="btn btn-ghost btn-sm">Tukar PIN</button>
+      <form id="pin-form" class="pin-form" novalidate autocomplete="off" hidden>
+        <div class="pin-form-grid">
+          <div class="field"><label>PIN semasa</label><div class="pin sm" data-pin="cur-pin"></div></div>
+          <div class="field"><label>PIN baharu</label><div class="pin sm" data-pin="new-pin"></div></div>
+          <div class="field"><label>Sahkan PIN baharu</label><div class="pin sm" data-pin="new-pin2"></div></div>
+        </div>
+        <div class="pin-form-actions">
+          <button type="submit" id="btn-pin-save" class="btn btn-sm">Simpan PIN</button>
+          <button type="button" id="btn-pin-cancel" class="btn btn-ghost btn-sm">Batal</button>
+        </div>
+      </form>
+    </div>
+    <div id="pin-error" class="error-box" hidden></div>
+
+    <!-- Paparan awam -->
+    <div class="email-card" id="privacy-card">
+      <div class="ec-text">
+        <span class="ec-label">🌐 Paparan pada senarai pasukan awam</span>
+        <strong id="pv-text"></strong>
+        <span class="muted">Jika dibuka, nama, fakulti &amp; nombor WhatsApp anda dipaparkan supaya pelajar boleh menghubungi anda &mdash; <u>hanya semasa pasukan anda belum lengkap</u>. Nama &amp; maklumat atlet tidak pernah dipaparkan.</span>
+      </div>
+      <label class="switch" aria-label="Paparkan kenalan saya"><input type="checkbox" id="pv-toggle"><span class="slider"></span></label>
+    </div>
+    <div id="privacy-error" class="error-box" hidden></div>
+  </section>
+
+  <!-- ===================== SENARAI PASUKAN (MANAGER) ===================== -->
+  <section id="view-directory" hidden>
+    <div class="greet">
+      <div class="eyebrow">Senarai Pasukan</div>
+      <h2>Pasukan &amp; sukan semasa</h2>
+      <p class="sub">Lihat pasukan yang masih mencari ahli. Hubungi manager melalui WhatsApp untuk menyertai.</p>
+    </div>
+    <div id="dir-main"></div>
+  </section>
+
+  <!-- ===================== JERSI ===================== -->
+  <section id="view-jersey" hidden>
+    <div class="greet">
+      <div class="eyebrow">Jersi Rasmi &middot; SUKOL 2026</div>
+      <h2>Jersi <span data-bind="team">Team Nilam</span></h2>
+    </div>
+
+    <div id="j-status" class="j-status"></div>
+
+    <div class="j-gallery">
+      <figure class="j-fig">
+        <button type="button" class="j-img" id="j-design" data-zoom aria-label="Besarkan rekaan"><span class="j-ph">Memuatkan rekaan…</span></button>
+        <figcaption>Rekaan jersi &mdash; depan &amp; belakang</figcaption>
+      </figure>
+      <figure class="j-fig">
+        <button type="button" class="j-img j-img-sq" id="j-mockup" data-zoom aria-label="Besarkan mockup"><span class="j-ph">Memuatkan mockup…</span></button>
+        <figcaption>Gambaran ilustrasi sahaja &mdash; produk sebenar mungkin berbeza.</figcaption>
+      </figure>
+    </div>
+
+    <div class="j-info" id="j-info"></div>
+
+    <form id="j-form" class="panel j-form" novalidate autocomplete="off" hidden>
+      <h3 class="form-h">Borang tempahan</h3>
+      <div id="j-error" class="error-box" hidden></div>
+      <div class="fields">
+        <div class="field span-6"><label>Nama Penuh</label><input type="text" name="name" maxlength="100"></div>
+        <div class="field span-6"><label>Nombor Pelajar</label><input type="text" name="studentId" inputmode="numeric" maxlength="20"></div>
+        <div class="field span-6"><label>Nombor Telefon (WhatsApp)</label><input type="tel" name="phone" inputmode="tel" maxlength="16" placeholder="012-3456789"></div>
+        <div class="field span-6"><label>Emel <span class="opt">(pilihan &mdash; untuk resit)</span></label><input type="email" name="email" inputmode="email" maxlength="120" placeholder="nama@gmail.com"></div>
+        <div class="field span-12"><label>Fakulti</label><select name="faculty"></select></div>
+      </div>
+
+      <div class="j-opt"><div class="j-opt-h">Saiz</div><div class="j-chips" id="j-sizes" data-name="size"></div></div>
+      <div class="j-opt"><div class="j-opt-h">Lengan</div><div class="j-chips" id="j-sleeves" data-name="sleeve"></div></div>
+
+      <div class="fields" id="j-print">
+        <div class="field span-8" id="j-f-name"><label>Nama di belakang jersi <span class="opt">(pilihan)</span></label><input type="text" name="printName" autocapitalize="characters" placeholder="cth: AIMI"></div>
+        <div class="field span-4" id="j-f-num"><label>No. jersi <span class="opt">(0&ndash;99)</span></label><input type="text" name="number" inputmode="numeric" maxlength="2" placeholder="cth: 7"></div>
+      </div>
+
+      <div class="j-buy">
+        <div class="qty">
+          <button type="button" class="qty-btn" data-qty="-1" aria-label="Kurang">&minus;</button>
+          <input type="text" name="qty" id="j-qty" value="1" inputmode="numeric" maxlength="2" aria-label="Kuantiti">
+          <button type="button" class="qty-btn" data-qty="1" aria-label="Tambah">+</button>
+        </div>
+        <div class="j-total"><span>Jumlah</span><b id="j-total">RM 0.00</b><small id="j-unit"></small></div>
+        <button type="submit" id="btn-j-submit" class="btn btn-accent btn-lg">Hantar tempahan</button>
+      </div>
+    </form>
+
+    <form id="ji-form" class="panel j-form" novalidate autocomplete="off" hidden>
+      <h3 class="form-h">Daftar minat 🙋</h3>
+      <p class="sub">Tempahan belum dibuka. Daftar minat anda supaya kami dapat menganggar kuantiti &amp; harga &mdash; anda akan dimaklumkan apabila tempahan dibuka.
+        <b>Ini bukan tempahan</b> dan tiada bayaran diperlukan.</p>
+      <div id="ji-error" class="error-box" hidden></div>
+      <div class="fields">
+        <div class="field span-6"><label>Nama Penuh</label><input type="text" name="name" maxlength="100"></div>
+        <div class="field span-6"><label>Nombor Pelajar</label><input type="text" name="studentId" inputmode="numeric" maxlength="20"></div>
+        <div class="field span-6"><label>Nombor Telefon (WhatsApp)</label><input type="tel" name="phone" inputmode="tel" maxlength="16" placeholder="012-3456789"></div>
+        <div class="field span-6"><label>Emel <span class="opt">(pilihan &mdash; untuk dimaklumkan bila tempahan dibuka)</span></label><input type="email" name="email" inputmode="email" maxlength="120" placeholder="nama@gmail.com"></div>
+        <div class="field span-12"><label>Fakulti</label><select name="faculty"></select></div>
+      </div>
+      <div class="j-opt"><div class="j-opt-h">Anggaran saiz</div><div class="j-chips" id="ji-sizes" data-group="i" data-name="size"></div></div>
+      <div class="j-opt"><div class="j-opt-h">Harga yang anda sanggup bayar (seunit)</div><div class="j-chips" id="ji-budget" data-group="i" data-name="budget"></div></div>
+      <div class="j-buy">
+        <div class="ji-qty-wrap"><div class="j-opt-h">Anggaran kuantiti</div>
+          <div class="qty">
+            <button type="button" class="qty-btn" data-qty="-1" aria-label="Kurang">&minus;</button>
+            <input type="text" name="qty" id="ji-qty" value="1" inputmode="numeric" maxlength="2" aria-label="Kuantiti">
+            <button type="button" class="qty-btn" data-qty="1" aria-label="Tambah">+</button>
+          </div>
+        </div>
+        <div class="j-total"></div>
+        <button type="submit" id="btn-ji-submit" class="btn btn-accent btn-lg">Daftar minat</button>
+      </div>
+    </form>
+    <div id="ji-done" class="panel j-done" hidden></div>
+
+    <div id="j-done" class="panel j-done" hidden></div>
+
+    <div id="j-lookup" class="panel j-lookup" hidden>
+      <h3 class="form-h">Semak tempahan</h3>
+      <form id="j-lookup-form" class="j-lookup-row" novalidate autocomplete="off">
+        <input type="text" name="lid" placeholder="ID tempahan (cth: J7K2QX)" maxlength="8" autocapitalize="characters">
+        <input type="tel" name="lphone" placeholder="No. telefon" inputmode="tel" maxlength="16">
+        <button type="submit" class="btn btn-ghost">Semak</button>
+      </form>
+      <div id="j-lookup-out"></div>
+    </div>
+  </section>
+
+  <!-- ===================== BORANG PASUKAN ===================== -->
+  <section id="view-form" hidden>
+    <form id="team-form" class="panel" novalidate autocomplete="off">
+      <h2 id="form-title"></h2>
+      <p class="sub" id="form-sub"></p>
+
+      <div class="progress-wrap">
+        <div class="progress"><div id="form-progress-bar"></div></div>
+        <span id="form-progress-text"></span>
+      </div>
+
+      <div class="partial-hint" id="partial-hint">
+        💡 <strong>Belum cukup atlet?</strong> Isi yang ada dahulu (sekurang-kurangnya 1 atlet) dan klik <strong>Simpan</strong>.
+        Slot pasukan ini akan ditempah untuk anda, dan anda boleh <strong>tambah baki atlet kemudian</strong> melalui dashboard.
+        Baris yang dibiarkan kosong akan dilangkau.
+      </div>
+
+      <div class="manager-box">
+        <div class="manager-title">👤 Maklumat Manager</div>
+        <div class="manager-grid">
+          <div><span>Nama</span><strong id="mg-name"></strong></div>
+          <div><span>No. Pelajar</span><strong id="mg-studentId"></strong></div>
+          <div><span>Kod Program</span><strong id="mg-program"></strong></div>
+          <div><span>Fakulti</span><strong id="mg-faculty"></strong></div>
+          <div><span>No. Telefon</span><strong id="mg-phone"></strong></div>
+          <div><span>Emel</span><strong id="mg-email"></strong></div>
+        </div>
+      </div>
+
+      <div id="error-box" class="error-box" hidden></div>
+
+      <div class="toolbar">
+        <button type="button" id="btn-copy" class="btn btn-ghost btn-sm">Salin Fakulti &amp; Kod Program Pemain 1 ke semua</button>
+      </div>
+
+      <div id="players"></div>
+
+      <div class="actions">
+        <button type="button" id="btn-back" class="btn btn-ghost">← Kembali</button>
+        <button type="submit" id="btn-submit" class="btn btn-accent">Simpan Pendaftaran</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- ===================== BERJAYA ===================== -->
+  <section id="view-done" hidden>
+    <div class="panel">
+      <div class="check">✓</div>
+      <h2 id="done-title">Pendaftaran berjaya</h2>
+      <p class="sub" id="done-sub"></p>
+      <div class="ref-row"><span>No. Rujukan</span><strong id="done-ref"></strong></div>
+      <div id="done-incomplete" class="mail-note warn" hidden></div>
+      <div id="done-mail" class="mail-note"></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>#</th><th>No. Pelajar</th><th>Nama</th><th>Kod Program</th><th>Fakulti</th><th>No. Telefon</th></tr>
+          </thead>
+          <tbody id="done-rows"></tbody>
+        </table>
+      </div>
+      <div class="actions">
+        <button type="button" id="btn-add-more" class="btn btn-edit" hidden>➕ Tambah atlet lagi</button>
+        <button type="button" id="btn-again" class="btn">Kembali ke dashboard</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ADMIN: LOG MASUK ===================== -->
+  <section id="view-alogin" hidden>
+    <div class="auth-wrap">
+      <div class="auth-hero">
+        <div class="logo logo-lg" data-keep>🛡️</div>
+        <h1>Panel <span class="grad-text">Admin</span></h1>
+        <p>Pemantauan sistem pendaftaran <span data-bind="college">Kolej Nilam</span>. Akses terhad kepada penganjur.</p>
+      </div>
+      <div class="glass auth-card">
+        <form id="alogin-form" novalidate autocomplete="off">
+          <h2 class="form-h">Log masuk admin 🔐</h2>
+          <p class="sub">Masukkan kata laluan admin.</p>
+          <div id="alogin-error" class="error-box" hidden></div>
+          <div class="field">
+            <label>Kata laluan</label>
+            <div class="input-wrap">
+              <span class="ico">🔑</span>
+              <input type="password" id="alogin-pw" class="input-lg" autocomplete="current-password" placeholder="••••••••">
+            </div>
+          </div>
+          <div class="actions">
+            <button type="submit" id="btn-alogin" class="btn btn-accent btn-lg btn-go">Log Masuk</button>
+          </div>
+          <p class="hint"><a href="#" id="link-manager">← Kembali ke portal manager</a></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ADMIN: PANEL ===================== -->
+  <section id="view-admin" hidden>
+    <div class="greet admin-head">
+      <div>
+        <div class="eyebrow">Panel Admin · <span data-bind="college">Kolej Nilam</span></div>
+        <h2>Pemantauan Sistem</h2>
+      </div>
+      <div class="admin-tools">
+        <span id="a-updated" class="muted"></span>
+        <button type="button" id="a-refresh" class="btn btn-ghost btn-sm">↻ Muat semula</button>
+        <a id="a-sheet" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">📄 Google Sheet</a>
+      </div>
+    </div>
+
+    <div class="stats stats-5" id="a-stats"></div>
+    <div class="reg-control" id="a-reg"></div>
+
+    <div class="section-head" id="a-sec-slots"><h2>Status slot sukan</h2></div>
+    <div class="table-wrap glass-pad"><table class="data-table" id="a-slots"></table></div>
+
+    <div class="section-head" id="a-sec-teams"><h2>Pasukan didaftar</h2></div>
+    <div id="a-teams" class="stack"></div>
+
+    <div class="section-head" id="a-sec-managers"><h2>Manager</h2></div>
+    <div class="table-wrap glass-pad"><table class="data-table" id="a-managers"></table></div>
+
+    <div class="section-head" id="a-sec-jersey"><h2>Tempahan jersi</h2></div>
+    <div id="a-jersey"></div>
+
+    <div class="section-head" id="a-sec-log"><h2>Log aktiviti</h2><span class="muted">60 terkini</span></div>
+    <div class="log" id="a-log"></div>
+
+    <div class="danger-zone">
+      <div>
+        <strong>Zon bahaya</strong>
+        <p>Padam semua data atlet dan manager (cth: selepas ujian sistem). Tindakan ini tidak boleh dibatalkan.</p>
+      </div>
+      <button type="button" class="btn btn-danger" data-act="reset">Padam semua data</button>
+    </div>
+  </section>
+
+  <footer><span data-bind="title">SUKOL Team Nilam</span> &middot; Sebarang pertanyaan, sila hubungi penganjur. &middot; <span>v4.7</span>
+    <span id="foot-admin" hidden> &middot; <a href="#" id="link-admin" class="foot-link">Admin</a></span></footer>
+
+
+  <!-- Modal pengesahan -->
+  <div id="modal" class="modal-backdrop" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <h3 id="modal-title">Sahkan</h3>
+      <p id="modal-text"></p>
+      <div id="modal-big" class="modal-big" hidden></div>
+      <div id="modal-input-wrap" class="field" hidden>
+        <label id="modal-input-label"></label>
+        <input type="text" id="modal-input" autocomplete="off">
+      </div>
+      <div class="actions">
+        <button type="button" id="modal-cancel" class="btn btn-ghost">Batal</button>
+        <button type="button" id="modal-ok" class="btn btn-accent">Ya</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Templat satu pemain -->
+  <template id="tpl-player">
+    <fieldset class="player" data-row>
+      <legend class="player-no"></legend>
+      <div class="fields">
+        <div class="field span-4">
+          <label>Nombor Pelajar</label>
+          <input type="text" name="studentId" inputmode="numeric" maxlength="20" autocomplete="off">
+        </div>
+        <div class="field span-8">
+          <label>Nama Pelajar</label>
+          <input type="text" name="name" maxlength="100" autocomplete="off">
+        </div>
+        <div class="field span-3">
+          <label>Kod Program</label>
+          <input type="text" name="program" maxlength="12" autocomplete="off" placeholder="cth: CS110">
+        </div>
+        <div class="field span-5">
+          <label>Fakulti</label>
+          <select name="faculty" required></select>
+        </div>
+        <div class="field span-4">
+          <label>Nombor Telefon (WhatsApp)</label>
+          <input type="tel" name="phone" inputmode="tel" maxlength="16" autocomplete="off" placeholder="012-3456789">
+        </div>
+      </div>
+    </fieldset>
+  </template>
+
+  <div id="lightbox" class="lightbox" hidden><img alt=""><button type="button" class="lb-close" aria-label="Tutup">&times;</button></div>
+</main>
+
+</div>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
